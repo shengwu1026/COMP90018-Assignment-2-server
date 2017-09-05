@@ -29,11 +29,17 @@ RSpec.describe User, type: :model do
 
     describe 'associations' do
         before do
-            create(:little_brother_chip, user: subject)
+            create(:little_brother_chip, user: subject) do |lil_chip|
+                create(:location, little_brother_chip: lil_chip)
+            end
         end
 
         it 'has a little_brother_chip' do
             expect(subject.little_brother_chip).to be_a(LittleBrotherChip)
+        end
+
+        it 'has a location' do
+            expect(subject.location).to be_a(Location)
         end
     end
 end

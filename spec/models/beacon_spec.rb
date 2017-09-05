@@ -37,5 +37,9 @@ RSpec.describe Beacon, type: :model do
         it 'belongs to a lot' do
             expect(subject.lot).to be_a(Lot)
         end
+
+        it 'has a building' do
+            expect(subject.building).to eq(subject.lot.building)
+        end
     end
 end
