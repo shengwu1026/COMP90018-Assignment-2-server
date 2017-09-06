@@ -47,6 +47,8 @@ group :test do
     gem 'rspec-rails', '~> 3.6'
     gem 'database_cleaner'
     gem 'factory_girl_rails', '~> 4.0'
+    gem 'json_spec', '~> 1.1.5'
+    gem 'rails-controller-testing', '~> 1.0.2'
 end
 
 group :development do

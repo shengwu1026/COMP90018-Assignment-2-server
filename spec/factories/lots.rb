@@ -2,7 +2,7 @@ FactoryGirl.define do
     factory :lot do
         building
 
-        type 'Toilet'
+        lot_type 'Toilet'
         name 'Ground Floor Section A Male Toilet'
         floor_level 'Ground Floor'
         dimensions ({

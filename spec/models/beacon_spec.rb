@@ -16,9 +16,9 @@ RSpec.describe Beacon, type: :model do
             expect(subject.manufacturer_uuid).to eq(uuid)
         end
 
-        it 'reads and writes :type' do
-            subject.type = 'edge'
-            expect(subject.type).to eq('edge')
+        it 'reads and writes :beacon_type' do
+            subject.beacon_type = 'edge'
+            expect(subject.beacon_type).to eq('edge')
         end
 
         it 'reads and writes :coordinates' do

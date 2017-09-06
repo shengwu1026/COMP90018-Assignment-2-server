@@ -11,9 +11,9 @@ RSpec.describe Lot, type: :model do
             expect(subject.building_id).to eq(uuid)
         end
 
-        it 'reads and writes :type' do
-            subject.type = 'Playground'
-            expect(subject.type).to eq('Playground')
+        it 'reads and writes :lot_type' do
+            subject.lot_type = 'Playground'
+            expect(subject.lot_type).to eq('Playground')
         end
 
         it 'reads and writes :name' do

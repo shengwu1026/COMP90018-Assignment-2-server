@@ -3,7 +3,7 @@ FactoryGirl.define do
         lot
 
         manufacturer_uuid SecureRandom.uuid
-        type 'Edge'
+        beacon_type 'Edge'
         coordinates ({
             x: 0,
             y: 0
