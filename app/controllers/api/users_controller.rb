@@ -35,7 +35,7 @@ class Api::UsersController < ApplicationController
         end
 
         def displayable_keys
-            %w(id first_name last_name username)
+            %w(first_name last_name username)
         end
 
 end

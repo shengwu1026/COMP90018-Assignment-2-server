@@ -4,6 +4,11 @@ RSpec.describe Building, type: :model do
     let(:subject) { create(:building) }
 
     describe 'attributes' do
+        it 'reads and writes :name' do
+            subject.name = 'newname'
+            expect(subject.name).to eq('newname')
+        end
+
         it 'reads and writes :address' do
             subject.address = {}
             expect(subject.address).to eq({})

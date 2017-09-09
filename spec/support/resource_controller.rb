@@ -10,8 +10,8 @@ RSpec.shared_examples 'a resource controller' do
         it "renders a resource's details" do
             get :show, params: { id: model.id }
 
-            expect(response.body).to be_json_eql( model.attributes.select{|k,v|
-                k.in? show_attr.map(&:to_s)}.to_json )
+            expect(response.body).to be_json_eql(
+                show_attr.map{|k| [k,model.send(k.to_sym)]}.to_h.to_json )
         end
     end
 

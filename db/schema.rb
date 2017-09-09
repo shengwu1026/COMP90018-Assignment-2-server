@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(version: 20170905041931) do
 
   create_table "buildings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.jsonb "address"
+    t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

@@ -1,5 +1,7 @@
 FactoryGirl.define do
     factory :building do
+        name 'University of Melbourne Engineering Building'
+
         address ({
             unit_number: '1A',
             street_number: '239',

@@ -31,10 +31,10 @@ class Api::BuildingsController < ApplicationController
 
     private
         def building_params
-            params.require(:building).permit :address
+            params.require(:building).permit :address, :name
         end
 
         def displayable_keys
-            %w(address)
+            %w(name address)
         end
 end

@@ -35,7 +35,7 @@ class Api::LotsController < ApplicationController
         end
 
         def displayable_keys
-            %w(building_id type name floor_level dimensions)
+            %w(building_id lot_type name floor_level dimensions)
         end
 
 end
