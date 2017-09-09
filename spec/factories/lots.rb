@@ -4,7 +4,7 @@ FactoryGirl.define do
 
         lot_type 'Toilet'
         name 'Ground Floor Section A Male Toilet'
-        floor_level 'Ground Floor'
+        floor_level 0
         dimensions ({
             units: 'Metres',
             length: 50,

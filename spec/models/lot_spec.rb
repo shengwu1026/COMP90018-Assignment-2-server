@@ -22,8 +22,8 @@ RSpec.describe Lot, type: :model do
         end
 
         it 'reads and writes :floor_level' do
-            subject.floor_level = 'B1'
-            expect(subject.floor_level).to eq('B1')
+            subject.floor_level = -1
+            expect(subject.floor_level).to eq(-1)
         end
 
         it 'reads and writes :dimensions' do

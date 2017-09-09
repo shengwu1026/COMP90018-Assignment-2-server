@@ -13,6 +13,11 @@ RSpec.describe Building, type: :model do
             subject.address = {}
             expect(subject.address).to eq({})
         end
+
+        it 'reads and writes :floor_levels' do
+            subject.floor_levels = [{}]
+            expect(subject.floor_levels).to eq([{}])
+        end
     end
 
     describe 'associations' do

@@ -31,6 +31,7 @@ ActiveRecord::Schema.define(version: 20170905041931) do
   create_table "buildings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.jsonb "address"
     t.string "name"
+    t.jsonb "floor_levels"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -56,7 +57,7 @@ ActiveRecord::Schema.define(version: 20170905041931) do
     t.uuid "building_id"
     t.string "lot_type"
     t.string "name"
-    t.string "floor_level"
+    t.integer "floor_level"
     t.jsonb "dimensions"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

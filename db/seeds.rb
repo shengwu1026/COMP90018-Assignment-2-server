@@ -16,7 +16,23 @@ b = Building.create(
     city: 'Melbourne',
     state: 'Victoria',
     post_code: '3052'
-  }
+  },
+  floor_levels: [
+    {
+      text: 'Ground Floor',
+      int: 0,
+      length: 100,
+      width: 100,
+      height: 3
+    },
+    {
+      text: 'First Floor',
+      int: 1,
+      length: 100,
+      width: 100,
+      height: 3
+    }
+  ]
 )
 
 l = Lot.create(

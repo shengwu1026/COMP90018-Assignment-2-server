@@ -4,7 +4,7 @@ class CreateLots < ActiveRecord::Migration[5.1]
             t.references :building, type: :uuid, index: true
             t.string :lot_type # can be toilet, room, etc
             t.string :name
-            t.string :floor_level # in case of G to represent story 1
+            t.integer :floor_level # ground as 0
             t.jsonb :dimensions
             t.timestamps
         end

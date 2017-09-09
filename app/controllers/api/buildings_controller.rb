@@ -35,6 +35,6 @@ class Api::BuildingsController < ApplicationController
         end
 
         def displayable_keys
-            %w(name address)
+            %w(name address floor_levels)
         end
 end

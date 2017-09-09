@@ -50,7 +50,7 @@ RSpec.shared_examples 'a resource controller' do
 
     describe 'Record not found' do
         it 'returns http status 404 with error message' do
-            get :show
+            get :show, params: { id: 'bogus-id' }
             expect(response).to have_http_status(404)
         end
     end
