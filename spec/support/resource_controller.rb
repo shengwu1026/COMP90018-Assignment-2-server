@@ -6,6 +6,17 @@ RSpec.shared_examples 'a resource controller' do
     let(:successful_update_params) {{ id: model.id, model_sym => model.attributes }}
     let(:failed_update_params) { {id: model.id, model_sym => invalid_model_attributes} }
 
+    describe 'GET index' do
+        it 'renders all resources of this type' do
+            get :index
+
+            all_records = model.class.name.constantize.all.map{|m|
+                show_attr.map{|k| [k, m.send(k.to_sym)]}.to_h }
+
+            expect(response.body).to be_json_eql(all_records.to_json)
+        end
+    end
+
     describe 'GET show' do
         it "renders a resource's details" do
             get :show, params: { id: model.id }

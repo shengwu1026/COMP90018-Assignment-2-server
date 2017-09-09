@@ -1,5 +1,11 @@
 class Api::LocationsController < ApplicationController
 
+    def index
+        locations = Location.all
+
+        render_records locations, displayable_keys
+    end
+
     def show
         location = Location.find params[:id]
 

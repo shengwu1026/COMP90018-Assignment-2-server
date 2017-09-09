@@ -1,5 +1,11 @@
 class Api::LotsController < ApplicationController
 
+    def index
+        lots = Lot.all
+
+        render_records lots, displayable_keys
+    end
+
     def show
         lot = Lot.find params[:id]
 

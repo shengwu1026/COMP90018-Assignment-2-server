@@ -1,5 +1,11 @@
 class Api::BuildingsController < ApplicationController
 
+    def index
+        buildings = Building.all
+
+        render_records buildings, displayable_keys
+    end
+
     def show
         building = Building.find params[:id]
 

@@ -1,5 +1,11 @@
 class Api::BeaconsController < ApplicationController
 
+    def index
+        beacons = Beacon.all
+
+        render_records beacons, displayable_keys
+    end
+
     def show
         beacon = Beacon.find params[:id]
 

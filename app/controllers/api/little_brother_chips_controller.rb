@@ -1,5 +1,11 @@
 class Api::LittleBrotherChipsController < ApplicationController
 
+    def index
+        little_brother_chips = LittleBrotherChip.all
+
+        render_records little_brother_chips, displayable_keys
+    end
+
     def show
         little_brother_chip = LittleBrotherChip.find params[:id]
 

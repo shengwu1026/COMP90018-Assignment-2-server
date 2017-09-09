@@ -1,8 +1,13 @@
 class ApplicationController < ActionController::API
-    # protect_from_forgery with: :exception    
+    # protect_from_forgery with: :exception
     rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 
     private
+
+        def render_records(models, displayable_keys)
+            render json: models.map{|m|
+                displayable_keys.map{|k| [k, m.send(k.to_sym)]}.to_h }
+        end
 
         def render_response(model, displayable_keys)
             render json: displayable_keys.map{|k| [k,model.send(k.to_sym)]}.to_h

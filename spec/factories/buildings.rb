@@ -18,14 +18,16 @@ FactoryGirl.define do
                 int: 0,
                 length: 100,
                 width: 100,
-                height: 3
+                height: 3,
+                units: 'Metres',
             },
             {
                 text: 'First Floor',
                 int: 1,
                 length: 100,
                 width: 100,
-                height: 3
+                height: 3,
+                units: 'Metres',
             }
             ])
     end

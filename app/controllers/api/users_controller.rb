@@ -1,5 +1,11 @@
 class Api::UsersController < ApplicationController
 
+    def index
+        users = User.all
+
+        render_records users, displayable_keys
+    end
+
     def show
         user = User.find params[:id]
 
