@@ -3,7 +3,7 @@ class Api::LotsController < ApplicationController
     def index
         lots = Lot.all
 
-        render_records lots, displayable_keys
+        render_records lots
     end
 
     def show

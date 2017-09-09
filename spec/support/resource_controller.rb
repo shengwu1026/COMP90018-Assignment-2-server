@@ -2,6 +2,7 @@ RSpec.shared_examples 'a resource controller' do
     # let!(:model) { create :user } # placeholder
     # let(:show_attr) { %w(id first_name last_name and username) }
     # let(:invalid_model_attributes) { {first_name:nil} }
+    # let(:models) optional
     let(:model_sym) { model.model_name.name.underscore.downcase.to_sym }
     let(:successful_update_params) {{ id: model.id, model_sym => model.attributes }}
     let(:failed_update_params) { {id: model.id, model_sym => invalid_model_attributes} }
@@ -10,8 +11,9 @@ RSpec.shared_examples 'a resource controller' do
         it 'renders all resources of this type' do
             get :index
 
-            all_records = model.class.name.constantize.all.map{|m|
-                show_attr.map{|k| [k, m.send(k.to_sym)]}.to_h }
+            all_records = defined?(models) ? models : model.class.name.constantize.all
+              # .map{|m|
+              #   (show_attr + ['id']).map{|k| [k, m.send(k.to_sym)]}.to_h }
 
             expect(response.body).to be_json_eql(all_records.to_json)
         end

@@ -3,7 +3,7 @@ class Api::LocationsController < ApplicationController
     def index
         locations = Location.all
 
-        render_records locations, displayable_keys
+        render_records locations
     end
 
     def show

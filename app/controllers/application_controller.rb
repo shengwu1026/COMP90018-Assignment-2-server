@@ -4,9 +4,10 @@ class ApplicationController < ActionController::API
 
     private
 
-        def render_records(models, displayable_keys)
-            render json: models.map{|m|
-                displayable_keys.map{|k| [k, m.send(k.to_sym)]}.to_h }
+        def render_records(models)
+            # render json: models.map{|m|
+            #     displayable_keys.map{|k| [k, m.send(k.to_sym)]}.to_h }
+            render json: models
         end
 
         def render_response(model, displayable_keys)

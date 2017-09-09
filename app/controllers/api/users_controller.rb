@@ -1,9 +1,9 @@
 class Api::UsersController < ApplicationController
 
     def index
-        users = User.all
+        users = User.all.map{|u| u.attributes.reject{|k,v| k.eql? 'password_digest'} }
 
-        render_records users, displayable_keys
+        render_records users
     end
 
     def show

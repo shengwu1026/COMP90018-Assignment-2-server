@@ -3,7 +3,7 @@ class Api::BeaconsController < ApplicationController
     def index
         beacons = Beacon.all
 
-        render_records beacons, displayable_keys
+        render_records beacons
     end
 
     def show

@@ -3,7 +3,7 @@ class Api::LittleBrotherChipsController < ApplicationController
     def index
         little_brother_chips = LittleBrotherChip.all
 
-        render_records little_brother_chips, displayable_keys
+        render_records little_brother_chips
     end
 
     def show
@@ -41,7 +41,7 @@ class Api::LittleBrotherChipsController < ApplicationController
         end
 
         def displayable_keys
-            %w(user_id location)
+            %w(user_id)
         end
 
 end
