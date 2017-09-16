@@ -9,5 +9,7 @@ FactoryGirl.define do
             y: 0
             })
         last_activity Time.now
+        major 54321
+        minor 12345
     end
 end

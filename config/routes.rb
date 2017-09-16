@@ -3,11 +3,13 @@ Rails.application.routes.draw do
 
   namespace :api do
       resources :users
-      resources :little_brother_chips
       resources :buildings
       resources :lots
       resources :beacons
       resources :locations
+      resources :little_brother_chips
+
+      patch '/locations/:id/triangulate/', to: 'locations#triangulate', as: :locations_triangulate
   end
 
   root 'static#index'

@@ -6,6 +6,9 @@ class CreateLots < ActiveRecord::Migration[5.1]
             t.string :name
             t.integer :floor_level # ground as 0
             t.jsonb :dimensions
+            t.float :rssi_1m_away_from_beacon
+            t.float :average_phone_height
+            t.float :path_loss
             t.timestamps
         end
     end

@@ -47,18 +47,24 @@ l = Lot.create(
       length: 50,
       width: 25,
       height: 3
-  }
+  },
+  rssi_1m_away_from_beacon: 100.0,
+  average_phone_height: 1.5,
+  path_loss: 20.0
 )
 
 b = Beacon.create(
   lot_id: l.id,
   manufacturer_uuid: SecureRandom.uuid,
   beacon_type: 'Edge',
+
   coordinates: {
     x: 0,
     y: 0
   },
-  last_activity: Time.now
+  last_activity: Time.now,
+  major: 54321,
+  minor: 12345
 )
 
 u = User.create(

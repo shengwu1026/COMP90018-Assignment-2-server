@@ -20,6 +20,8 @@ ActiveRecord::Schema.define(version: 20170905041931) do
   create_table "beacons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "lot_id"
     t.string "manufacturer_uuid"
+    t.integer "major"
+    t.integer "minor"
     t.string "beacon_type"
     t.jsonb "coordinates"
     t.datetime "last_activity"
@@ -59,6 +61,9 @@ ActiveRecord::Schema.define(version: 20170905041931) do
     t.string "name"
     t.integer "floor_level"
     t.jsonb "dimensions"
+    t.float "rssi_1m_away_from_beacon"
+    t.float "average_phone_height"
+    t.float "path_loss"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["building_id"], name: "index_lots_on_building_id"

@@ -1,5 +1,7 @@
 class Api::LocationsController < ApplicationController
 
+    before_action :validate_triangulate_params, only: :triangulate
+
     def index
         locations = Location.all
 
@@ -14,7 +16,34 @@ class Api::LocationsController < ApplicationController
 
     def update
         location = Location.find params[:id]
-        location.assign_attributes location_params
+        location.assign_attributes(location_params)
+
+        location.save ?
+            render_204
+            : render_error(location)
+    end
+
+    # update coordinates
+    def triangulate
+        location = Location.find params[:id]
+
+        array_of_3_beacon_hashes = sanitized_beacons.map{|b|
+            # find by beacon uuid
+            beacon_from_db = Beacon.find_by_manufacturer_uuid b[:uuid]
+
+            # should make background job to update beacon's last activity?
+            beacon_from_db.update_attributes(last_activity: Time.now)
+
+            # prepare calculation values
+            beacon_from_db.attributes
+                .select{|k,v| k.in? %w(id coordinates)}
+                .merge(
+                    rssi: b[:rssi],
+                    distance_from_phone: location.distance_from_phone(b[:rssi]) )
+                .deep_symbolize_keys }
+
+        # sets new coordinates
+        location.update_coordinates array_of_3_beacon_hashes
 
         location.save ?
             render_204
@@ -38,6 +67,27 @@ class Api::LocationsController < ApplicationController
     private
         def location_params
             params.require(:location).permit :little_brother_chip_id, :lot_id, :coordinates
+        end
+
+        def validate_triangulate_params
+            begin
+                raise "Parameters must have `beacons` key" unless params[:beacons]
+
+                params[:beacons].map{|b|
+                    raise "Beacon parameters within `beacons` must have `rssi` key" unless b[:rssi] }
+
+                params[:beacons].map{|b|
+                    raise "Beacon parameters within `beacons` must have `uuid` key" unless b[:uuid] }
+            rescue => e
+                render_error_message(e)
+            end
+        end
+
+        def sanitized_beacons
+            params[:beacons].map{|b|
+                {rssi: b[:rssi].to_f, uuid: b[:uuid]} }
+                .sort{|beacon_info| beacon_info[:rssi] }
+                .last(3)
         end
 
         def displayable_keys

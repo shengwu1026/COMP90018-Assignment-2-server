@@ -18,6 +18,10 @@ class ApplicationController < ActionController::API
             render json: { errors: model.errors.full_messages }, status: 422
         end
 
+        def render_error_message(raised_error)
+            render json: { errors: raised_error.message }, status: 422            
+        end
+
         def record_not_found
             render json: { errors: ['Record not found.'] }, status: :not_found
         end
