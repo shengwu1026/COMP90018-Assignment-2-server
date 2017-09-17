@@ -5,7 +5,7 @@ class CreateBeacons < ActiveRecord::Migration[5.1]
             t.string :manufacturer_uuid # pre-programmed uuid
             t.integer :major
             t.integer :minor
-            t.string :beacon_type # can be normal or edge beacons
+            # t.string :beacon_type # can be normal or edge beacons
             t.jsonb :coordinates
             t.datetime :last_activity # detect potentially faulty beacons
             t.timestamps

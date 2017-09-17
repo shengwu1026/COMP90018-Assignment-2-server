@@ -37,10 +37,13 @@ class Api::BuildingsController < ApplicationController
 
     private
         def building_params
-            params.require(:building).permit :address, :name
+            params.require(:building).permit :name,
+                {address: [:unit_number, :street_number, :street_name, :suburb,
+                     :city, :state, :post_code]},
+                floor_levels: [:text, :int, :length, :width, :height, :units]
         end
 
         def displayable_keys
-            %w(name address floor_levels)
+            %w(id name address floor_levels)
         end
 end

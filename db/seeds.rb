@@ -48,24 +48,23 @@ l = Lot.create(
       width: 25,
       height: 3
   },
-  rssi_1m_away_from_beacon: 100.0,
+  rssi_1m_away_from_beacon: 10.0,
   average_phone_height: 1.5,
-  path_loss: 20.0
+  path_loss: 2.0
 )
 
-b = Beacon.create(
+b = 3.times.map{ Beacon.create(
   lot_id: l.id,
   manufacturer_uuid: SecureRandom.uuid,
-  beacon_type: 'Edge',
 
   coordinates: {
-    x: 0,
-    y: 0
+    x: (10..100).to_a.sample,
+    y: (10..100).to_a.sample
   },
   last_activity: Time.now,
-  major: 54321,
-  minor: 12345
-)
+  major: (10000..99999).to_a.sample,
+  minor: (10000..99999).to_a.sample
+)}
 
 u = User.create(
   first_name: 'Seed',

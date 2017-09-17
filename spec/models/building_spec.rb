@@ -48,4 +48,24 @@ RSpec.describe Building, type: :model do
             expect(subject.users.size).to eq(lot_count * little_brother_chips_per_lot)
         end
     end
+
+    describe 'instance methods' do
+        describe '#parse_floor_level_dimensions' do
+            subject { create :building, floor_levels:
+                    [{int: "1", length: "100", width: "100", height: "3", units: "Metres", text: "1st floor"}] }
+
+            it 'converts coordinates to integers' do
+
+                subject.send :parse_floor_level_dimensions
+                subject.save
+
+                # test all these json values are of int type
+                floor_level = subject.floor_levels.first
+
+                %w(int length width height).each do |k|
+                    expect(floor_level[k]).to be_a(Integer)
+                end
+            end
+        end
+    end
 end

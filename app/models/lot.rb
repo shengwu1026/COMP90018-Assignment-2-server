@@ -9,4 +9,16 @@ class Lot < ApplicationRecord
     validates_presence_of :building, :name, :floor_level,
         :dimensions, :rssi_1m_away_from_beacon, :average_phone_height,
         :path_loss
+
+    before_save :parse_dimensions
+
+    private
+        def parse_dimensions
+            if dimensions.present?
+                self.dimensions = dimensions.map{|k,v|
+                    k.in?(%w(length width height)) ?
+                        [k, v.to_i]
+                        : [k, v] }.to_h
+            end
+        end
 end

@@ -5,8 +5,18 @@ RSpec.describe Api::LocationsController, type: :controller do
     include_context 'common'
 
     let!(:model) { create :location }
-    let(:show_attr) { %w(little_brother_chip_id lot_id coordinates) }
+    let(:show_attr) { %w(id little_brother_chip_id lot_id coordinates) }
     let(:invalid_model_attributes) { {little_brother_chip_id: nil} }
+    let(:successful_create_params) {{
+        location: {
+            little_brother_chip_id: (create :little_brother_chip).id,
+            lot_id: (create :lot).id,
+            coordinates: {
+                x: 20,
+                y: 10
+            }
+        }
+    }}
 
     it_behaves_like 'a resource controller'
 
@@ -16,7 +26,7 @@ RSpec.describe Api::LocationsController, type: :controller do
         let(:beacon_2) { create :beacon, coordinates: {x: -1, y: -1}, manufacturer_uuid: SecureRandom.uuid }
         let(:beacon_3) { create :beacon, coordinates: {x: 1, y: -1}, manufacturer_uuid: SecureRandom.uuid }
         let(:beacons_array) { [beacon_1, beacon_2, beacon_3].each.with_index(1).map{|b,i|
-            {uuid: b.manufacturer_uuid, rssi: i * 10} } }
+            {uuid: b.manufacturer_uuid, rssi: i * 10, major: b.major, minor: b.minor} } }
 
         it 'updates a little brother chips location' do
             little_brother_chip = location.little_brother_chip
@@ -48,6 +58,20 @@ RSpec.describe Api::LocationsController, type: :controller do
                     patch :triangulate, params: {id: location.id, beacons: invalid_beacons}
 
                     expect(response.body).to be_json_eql({errors: 'Beacon parameters within `beacons` must have `uuid` key'}.to_json)
+                end
+
+                it 'has key :major' do
+                    invalid_beacons = beacons_array.map{|b| b.except :major}
+                    patch :triangulate, params: {id: location.id, beacons: invalid_beacons}
+
+                    expect(response.body).to be_json_eql({errors: 'Beacon parameters within `beacons` must have `major` key'}.to_json)
+                end
+
+                it 'has key :minor' do
+                    invalid_beacons = beacons_array.map{|b| b.except :minor}
+                    patch :triangulate, params: {id: location.id, beacons: invalid_beacons}
+
+                    expect(response.body).to be_json_eql({errors: 'Beacon parameters within `beacons` must have `minor` key'}.to_json)
                 end
             end
         end

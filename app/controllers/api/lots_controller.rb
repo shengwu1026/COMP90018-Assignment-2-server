@@ -37,11 +37,13 @@ class Api::LotsController < ApplicationController
 
     private
         def lot_params
-            params.require(:lot).permit :building_id, :lot_type, :name, :floor_level, :dimensions
+            params.require(:lot).permit :building_id, :lot_type, :name, :floor_level,
+                {dimensions: [:units, :length, :width, :height] },
+                :rssi_1m_away_from_beacon, :average_phone_height, :path_loss
         end
 
         def displayable_keys
-            %w(building_id lot_type name floor_level dimensions)
+            %w(id building_id lot_type name floor_level dimensions)
         end
 
 end

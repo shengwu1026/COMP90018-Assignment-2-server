@@ -22,7 +22,6 @@ ActiveRecord::Schema.define(version: 20170905041931) do
     t.string "manufacturer_uuid"
     t.integer "major"
     t.integer "minor"
-    t.string "beacon_type"
     t.jsonb "coordinates"
     t.datetime "last_activity"
     t.datetime "created_at", null: false

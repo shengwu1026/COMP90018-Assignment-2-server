@@ -37,11 +37,12 @@ class Api::BeaconsController < ApplicationController
 
     private
         def beacon_params
-            params.require(:beacon).permit :lot_id, :manufacturer_uuid, :beacon_type, :coordinates
+            params.require(:beacon).permit :lot_id, :manufacturer_uuid,
+                {coordinates: [:x, :y]}, :major, :minor
         end
 
         def displayable_keys
-            %w(lot_id manufacturer_uuid beacon_type coordinates last_activity)
+            %w(id lot_id manufacturer_uuid major minor coordinates last_activity)
         end
 
 end

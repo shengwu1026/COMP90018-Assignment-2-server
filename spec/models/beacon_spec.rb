@@ -16,11 +16,6 @@ RSpec.describe Beacon, type: :model do
             expect(subject.manufacturer_uuid).to eq(uuid)
         end
 
-        it 'reads and writes :beacon_type' do
-            subject.beacon_type = 'edge'
-            expect(subject.beacon_type).to eq('edge')
-        end
-
         it 'reads and writes :coordinates' do
             subject.coordinates = {}
             expect(subject.coordinates).to eq({})
@@ -40,6 +35,20 @@ RSpec.describe Beacon, type: :model do
 
         it 'has a building' do
             expect(subject.building).to eq(subject.lot.building)
+        end
+    end
+
+    describe 'instance methods' do
+        describe '#parse_coordinates' do
+            subject { create :beacon, coordinates: {x: "1", y: "-1"} }
+            it 'converts coordinates to integers' do
+
+                subject.send :parse_coordinates
+                subject.save
+
+                expect(subject.coordinates.to_json)
+                    .to be_json_eql({x: 1, y: -1}.to_json)
+            end
         end
     end
 end

@@ -41,7 +41,7 @@ class Api::LittleBrotherChipsController < ApplicationController
         end
 
         def displayable_keys
-            %w(user_id)
+            %w(id user_id)
         end
 
 end

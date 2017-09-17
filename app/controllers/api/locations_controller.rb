@@ -29,7 +29,13 @@ class Api::LocationsController < ApplicationController
 
         array_of_3_beacon_hashes = sanitized_beacons.map{|b|
             # find by beacon uuid
-            beacon_from_db = Beacon.find_by_manufacturer_uuid b[:uuid]
+            beacon_from_db = Beacon.where(manufacturer_uuid: b[:uuid])
+              .where(major: b[:major])
+              .where(minor: b[:minor])
+              .first
+
+            # beacon does not exist in db
+            record_not_found("Beacon uuid #{b[:uuid]}") and return if beacon_from_db.nil?
 
             # should make background job to update beacon's last activity?
             beacon_from_db.update_attributes(last_activity: Time.now)
@@ -66,7 +72,7 @@ class Api::LocationsController < ApplicationController
 
     private
         def location_params
-            params.require(:location).permit :little_brother_chip_id, :lot_id, :coordinates
+            params.require(:location).permit :little_brother_chip_id, :lot_id, {coordinates: [:x, :y]}
         end
 
         def validate_triangulate_params
@@ -78,6 +84,12 @@ class Api::LocationsController < ApplicationController
 
                 params[:beacons].map{|b|
                     raise "Beacon parameters within `beacons` must have `uuid` key" unless b[:uuid] }
+
+                params[:beacons].map{|b|
+                    raise "Beacon parameters within `beacons` must have `major` key" unless b[:major] }
+
+                params[:beacons].map{|b|
+                    raise "Beacon parameters within `beacons` must have `minor` key" unless b[:minor] }
             rescue => e
                 render_error_message(e)
             end
@@ -85,13 +97,13 @@ class Api::LocationsController < ApplicationController
 
         def sanitized_beacons
             params[:beacons].map{|b|
-                {rssi: b[:rssi].to_f, uuid: b[:uuid]} }
+                { rssi: b[:rssi].to_f, uuid: b[:uuid], major: b[:major], minor: b[:minor] } }
                 .sort{|beacon_info| beacon_info[:rssi] }
                 .last(3)
         end
 
         def displayable_keys
-            %w(little_brother_chip_id lot_id coordinates)
+            %w(id little_brother_chip_id lot_id coordinates)
         end
 
 end

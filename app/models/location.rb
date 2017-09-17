@@ -6,6 +6,8 @@ class Location < ApplicationRecord
 
     validates_presence_of :little_brother_chip, :lot, :coordinates
 
+    before_save :parse_coordinates
+
     # set new coordinates
     def update_coordinates(array_of_3_beacon_hashes)
         self.coordinates = triangulate array_of_3_beacon_hashes
@@ -14,10 +16,14 @@ class Location < ApplicationRecord
     # note, moved rssi_1m_away_from_beacon, path_loss, average_phone_height out of args
     def distance_from_phone(rssi)
         raw_distance = 10 ** ((lot.rssi_1m_away_from_beacon - rssi) / (10 * lot.path_loss))
-        Math.sqrt((raw_distance ** 2) - (lot.average_phone_height ** 2))
+        Math.sqrt( (raw_distance ** 2) - (lot.average_phone_height ** 2) )
     end
 
     private
+        def parse_coordinates
+            self.coordinates = self.coordinates.map{|k,v| [k,v.to_i]}.to_h
+        end
+
         # hash must include :rssi and :distance_from_phone key
         def weighted_location(array_of_3_beacon_hashes)
             weight = array_of_3_beacon_hashes.map{|b| 1.0 / b[:distance_from_phone] }.sum
