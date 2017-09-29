@@ -4,13 +4,11 @@ class Api::LocationsController < ApplicationController
 
     def index
         locations = Location.all
-
         render_records locations
     end
 
     def show
         location = Location.find params[:id]
-
         render_response location, displayable_keys
     end
 
@@ -23,9 +21,34 @@ class Api::LocationsController < ApplicationController
             : render_error(location)
     end
 
+    # get location for little brother chip
+    def fetch
+        location = Location.find_by_little_brother_chip_id params[:little_brother_chip_id]
+
+        unless location
+            location = Location.new
+        end
+
+        render_response location, displayable_keys
+    end
+
     # update coordinates
     def triangulate
-        location = Location.find params[:id]
+        location = Location.find_by_little_brother_chip_id params[:little_brother_chip_id]
+
+        # create location if doesn't exist, infer lot from strongest beacon
+        unless location
+            b = sanitized_beacons.last
+
+            beacon_from_db = Beacon.where(manufacturer_uuid: b[:uuid])
+              .where(major: b[:major])
+              .where(minor: b[:minor])
+              .first
+
+            location = Location.new(
+                lot: beacon_from_db.lot,
+                little_brother_chip: LittleBrotherChip.find(params[:little_brother_chip_id]))
+        end
 
         array_of_3_beacon_hashes = sanitized_beacons.map{|b|
             # find by beacon uuid

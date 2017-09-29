@@ -7,9 +7,10 @@ Rails.application.routes.draw do
       resources :lots
       resources :beacons
       resources :locations
-      resources :little_brother_chips
-
-      patch '/locations/:id/triangulate/', to: 'locations#triangulate', as: :locations_triangulate
+      resources :little_brother_chips do
+          get '/location', to: 'locations#fetch'
+          patch '/triangulate', to: 'locations#triangulate' #, as: :locations_triangulate
+      end
   end
 
   root 'static#index'
