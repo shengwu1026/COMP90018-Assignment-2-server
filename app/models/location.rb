@@ -21,7 +21,7 @@ class Location < ApplicationRecord
 
     private
         def parse_coordinates
-            self.coordinates = self.coordinates.map{|k,v| [k,v.to_i]}.to_h
+            self.coordinates = self.coordinates.map{|k,v| [k,v.to_f]}.to_h
         end
 
         # hash must include :rssi and :distance_from_phone key

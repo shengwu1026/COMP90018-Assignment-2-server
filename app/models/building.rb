@@ -18,7 +18,7 @@ class Building < ApplicationRecord
                     # convert int length width height to integers
                     f.map{|k,v|
                         k.in?(%w(int length width height)) ?
-                            [k, v.to_i]
+                            [k, v.to_f]
                             : [k, v]
                     }.to_h
                 }

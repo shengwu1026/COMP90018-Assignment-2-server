@@ -17,7 +17,7 @@ class Lot < ApplicationRecord
             if dimensions.present?
                 self.dimensions = dimensions.map{|k,v|
                     k.in?(%w(length width height)) ?
-                        [k, v.to_i]
+                        [k, v.to_f]
                         : [k, v] }.to_h
             end
         end
