@@ -98,7 +98,7 @@ class Api::LocationsController < ApplicationController
             params.require(:location).permit :little_brother_chip_id, :lot_id, {coordinates: [:x, :y]}
         end
 
-        def validate_triangulate_params
+        def validate_triangulate_params                        
             begin
                 raise "Parameters must have `beacons` key" unless params[:beacons]
 

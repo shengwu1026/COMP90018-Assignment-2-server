@@ -12,8 +12,8 @@ RSpec.describe Api::LocationsController, type: :controller do
             little_brother_chip_id: (create :little_brother_chip).id,
             lot_id: (create :lot).id,
             coordinates: {
-                x: 20,
-                y: 10
+                x: 20.0,
+                y: 10.0
             }
         }
     }}
@@ -53,6 +53,24 @@ RSpec.describe Api::LocationsController, type: :controller do
         let(:beacon_3) { create :beacon, coordinates: {x: 1, y: -1}, manufacturer_uuid: SecureRandom.uuid }
         let(:beacons_array) { [beacon_1, beacon_2, beacon_3].each.with_index(1).map{|b,i|
             {uuid: b.manufacturer_uuid, rssi: i * 10, major: b.major, minor: b.minor} } }
+
+        context 'when no location can be found for a little brother chip' do
+            let(:little_brother_chip) { create :little_brother_chip }
+
+            it 'creates a location and sets its coordinates' do
+                expect(little_brother_chip.location).to be_nil
+
+                patch :triangulate, params: {
+                    little_brother_chip_id: little_brother_chip.id,
+                    beacons: beacons_array }
+
+                expect(response).to have_http_status(204)
+
+                little_brother_chip.reload
+
+                expect(little_brother_chip.location).not_to be_nil
+            end
+        end
 
         it 'updates a little brother chips location' do
             patch :triangulate, params: {
