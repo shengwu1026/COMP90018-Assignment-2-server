@@ -14,10 +14,10 @@ class Location < ApplicationRecord
     end
 
     # note, moved rssi_1m_away_from_beacon, path_loss, average_phone_height out of args
-    # def distance_from_phone(rssi)
-    #     raw_distance = 10 ** ((lot.rssi_1m_away_from_beacon - rssi) / (10 * lot.path_loss))
-    #     Math.sqrt( (raw_distance ** 2) - (lot.average_phone_height ** 2) )
-    # end
+    def distance_from_phone(raw_distance)
+        # raw_distance = 10 ** ((lot.rssi_1m_away_from_beacon - rssi) / (10 * lot.path_loss))
+        Math.sqrt( (raw_distance ** 2) - (lot.average_phone_height ** 2) )
+    end
 
     private
         def parse_coordinates

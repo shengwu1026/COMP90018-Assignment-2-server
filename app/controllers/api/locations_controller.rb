@@ -68,7 +68,7 @@ class Api::LocationsController < ApplicationController
                 .select{|k,v| k.in? %w(id coordinates)}
                 .merge(
                     # rssi: b[:rssi],
-                    distance_from_phone: b[:distance_from_phone]) #location.distance_from_phone(b[:rssi]) )
+                    distance_from_phone: location.distance_from_phone(b[:distance_from_phone])) #location.distance_from_phone(b[:rssi]) )
                 .deep_symbolize_keys }
 
         # sets new coordinates
@@ -122,8 +122,8 @@ class Api::LocationsController < ApplicationController
         def sanitized_beacons
             params[:beacons].map{|b|
                 { rssi: b[:rssi].to_f, uuid: b[:uuid], major: b[:major], minor: b[:minor], distance_from_phone: b[:distance_from_phone] } }
-                .sort{|beacon_info| beacon_info[:rssi] }
-                .last(3)
+                .sort{|beacon_info| beacon_info[:distance_from_phone] }
+                .first(3)
         end
 
         def displayable_keys
