@@ -67,8 +67,8 @@ class Api::LocationsController < ApplicationController
             beacon_from_db.attributes
                 .select{|k,v| k.in? %w(id coordinates)}
                 .merge(
-                    rssi: b[:rssi],
-                    distance_from_phone: location.distance_from_phone(b[:rssi]) )
+                    # rssi: b[:rssi],
+                    distance_from_phone: b[:distance_from_phone]) #location.distance_from_phone(b[:rssi]) )
                 .deep_symbolize_keys }
 
         # sets new coordinates
@@ -98,12 +98,13 @@ class Api::LocationsController < ApplicationController
             params.require(:location).permit :little_brother_chip_id, :lot_id, {coordinates: [:x, :y]}
         end
 
-        def validate_triangulate_params                        
+        def validate_triangulate_params
             begin
                 raise "Parameters must have `beacons` key" unless params[:beacons]
 
                 params[:beacons].map{|b|
-                    raise "Beacon parameters within `beacons` must have `rssi` key" unless b[:rssi] }
+                    raise "Beacon parameters within `beacons` must have `distance_from_phone` key" unless b[:distance_from_phone] }
+                    # raise "Beacon parameters within `beacons` must have `rssi` key" unless b[:rssi] }
 
                 params[:beacons].map{|b|
                     raise "Beacon parameters within `beacons` must have `uuid` key" unless b[:uuid] }
@@ -120,7 +121,7 @@ class Api::LocationsController < ApplicationController
 
         def sanitized_beacons
             params[:beacons].map{|b|
-                { rssi: b[:rssi].to_f, uuid: b[:uuid], major: b[:major], minor: b[:minor] } }
+                { rssi: b[:rssi].to_f, uuid: b[:uuid], major: b[:major], minor: b[:minor], distance_from_phone: b[:distance_from_phone] } }
                 .sort{|beacon_info| beacon_info[:rssi] }
                 .last(3)
         end
