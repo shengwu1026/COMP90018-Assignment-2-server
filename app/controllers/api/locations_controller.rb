@@ -32,13 +32,14 @@ class Api::LocationsController < ApplicationController
         render_response location, displayable_keys
     end
 
-    # update coordinates
+    # latest little brother chip's location
+    # creates new or updates existing location
     def triangulate
         location = Location.find_by_little_brother_chip_id params[:little_brother_chip_id]
 
         # create location if doesn't exist, infer lot from strongest beacon
         unless location
-            b = sanitized_beacons.last
+            b = sanitized_beacons.first
 
             beacon_from_db = Beacon.where(manufacturer_uuid: b[:uuid])
               .where(major: b[:major])
@@ -50,8 +51,9 @@ class Api::LocationsController < ApplicationController
                 little_brother_chip: LittleBrotherChip.find(params[:little_brother_chip_id]))
         end
 
-        array_of_3_beacon_hashes = sanitized_beacons.map{|b|
-            # find by beacon uuid
+		# update beacon activity times
+        beacons = sanitized_beacons.map{|b|
+            # find beacon using its manufacturer properties
             beacon_from_db = Beacon.where(manufacturer_uuid: b[:uuid])
               .where(major: b[:major])
               .where(minor: b[:minor])
@@ -60,19 +62,15 @@ class Api::LocationsController < ApplicationController
             # beacon does not exist in db
             record_not_found("Beacon uuid #{b[:uuid]}") and return if beacon_from_db.nil?
 
-            # should make background job to update beacon's last activity?
-            beacon_from_db.update_attributes(last_activity: Time.now)
+            beacon_from_db.update_attributes(last_activity: Time.now) 
+            beacon_from_db }
 
-            # prepare calculation values
-            beacon_from_db.attributes
-                .select{|k,v| k.in? %w(id coordinates)}
-                .merge(
-                    # rssi: b[:rssi],
-                    distance_from_phone: location.distance_from_phone(b[:distance_from_phone])) #location.distance_from_phone(b[:rssi]) )
-                .deep_symbolize_keys }
-
-        # sets new coordinates
-        location.update_coordinates array_of_3_beacon_hashes
+		nearest_beacon = beacons.first
+		lot = nearest_beacon.lot
+		
+		location.assign_attributes(
+			lot_id: lot.id,
+			coordinates: params[:coordinates] )
 
         location.save ?
             render_204
@@ -104,7 +102,6 @@ class Api::LocationsController < ApplicationController
 
                 params[:beacons].map{|b|
                     raise "Beacon parameters within `beacons` must have `distance_from_phone` key" unless b[:distance_from_phone] }
-                    # raise "Beacon parameters within `beacons` must have `rssi` key" unless b[:rssi] }
 
                 params[:beacons].map{|b|
                     raise "Beacon parameters within `beacons` must have `uuid` key" unless b[:uuid] }
@@ -121,9 +118,8 @@ class Api::LocationsController < ApplicationController
 
         def sanitized_beacons
             params[:beacons].map{|b|
-                { rssi: b[:rssi].to_f, uuid: b[:uuid], major: b[:major], minor: b[:minor], distance_from_phone: b[:distance_from_phone] } }
+                { uuid: b[:uuid], major: b[:major], minor: b[:minor], distance_from_phone: b[:distance_from_phone] } }
                 .sort{|beacon_info| beacon_info[:distance_from_phone] }
-                .first(3)
         end
 
         def displayable_keys
