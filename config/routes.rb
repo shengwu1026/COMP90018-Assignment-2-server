@@ -9,8 +9,7 @@ Rails.application.routes.draw do
       resources :locations
       resources :little_brother_chips do
           get '/location', to: 'locations#fetch'
-          patch '/location', to: 'locations#triangulate'
-          # patch '/triangulate', to: 'locations#triangulate' #, as: :locations_triangulate
+          patch '/location', to: 'locations#triangulate'         
       end
   end
 

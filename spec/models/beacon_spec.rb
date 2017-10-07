@@ -41,13 +41,13 @@ RSpec.describe Beacon, type: :model do
     describe 'instance methods' do
         describe '#parse_coordinates' do
             subject { create :beacon, coordinates: {x: "1", y: "-1"} }
-            it 'converts coordinates to integers' do
+            it 'converts coordinates to floats' do
 
                 subject.send :parse_coordinates
                 subject.save
 
                 expect(subject.coordinates.to_json)
-                    .to be_json_eql({x: 1, y: -1}.to_json)
+                    .to be_json_eql({x: 1.0, y: -1.0}.to_json)
             end
         end
     end

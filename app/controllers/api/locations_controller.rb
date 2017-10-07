@@ -26,10 +26,15 @@ class Api::LocationsController < ApplicationController
         location = Location.find_by_little_brother_chip_id params[:little_brother_chip_id]
 
         unless location
-            location = Location.new
+            response = Location.new.attributes.merge(lot: nil, building: nil)
+        else
+            response = location.attributes.merge(
+                lot: location.lot.attributes.select{|k,v| k.in? %w(id name floor_levels dimensions)},
+                building: location.lot.building.attributes.select{|k,v| k.in? %w(id name address)}
+            )
         end
 
-        render_response location, displayable_keys
+        render json: response.stringify_keys.select{|k,v| k.in? %w(id lot building coordinates)}
     end
 
     # latest little brother chip's location
@@ -62,12 +67,12 @@ class Api::LocationsController < ApplicationController
             # beacon does not exist in db
             record_not_found("Beacon uuid #{b[:uuid]}") and return if beacon_from_db.nil?
 
-            beacon_from_db.update_attributes(last_activity: Time.now) 
+            beacon_from_db.update_attributes(last_activity: Time.now)
             beacon_from_db }
 
 		nearest_beacon = beacons.first
 		lot = nearest_beacon.lot
-		
+
 		location.assign_attributes(
 			lot_id: lot.id,
 			coordinates: params[:coordinates] )
@@ -96,6 +101,7 @@ class Api::LocationsController < ApplicationController
             params.require(:location).permit :little_brother_chip_id, :lot_id, {coordinates: [:x, :y]}
         end
 
+        # ensure beacon params adhere to requirements
         def validate_triangulate_params
             begin
                 raise "Parameters must have `beacons` key" unless params[:beacons]
@@ -116,9 +122,11 @@ class Api::LocationsController < ApplicationController
             end
         end
 
+        # normalise beacon parameters received
+        # sorted by ascending distance from phone
         def sanitized_beacons
             params[:beacons].map{|b|
-                { uuid: b[:uuid], major: b[:major], minor: b[:minor], distance_from_phone: b[:distance_from_phone] } }
+                { uuid: b[:uuid], major: b[:major], minor: b[:minor], distance_from_phone: b[:distance_from_phone].to_f } }
                 .sort{|beacon_info| beacon_info[:distance_from_phone] }
         end
 

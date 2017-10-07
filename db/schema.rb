@@ -60,9 +60,6 @@ ActiveRecord::Schema.define(version: 20170905041931) do
     t.string "name"
     t.integer "floor_level"
     t.jsonb "dimensions"
-    t.float "rssi_1m_away_from_beacon"
-    t.float "average_phone_height"
-    t.float "path_loss"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["building_id"], name: "index_lots_on_building_id"

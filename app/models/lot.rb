@@ -7,8 +7,7 @@ class Lot < ApplicationRecord
     has_many :users, through: :little_brother_chips
 
     validates_presence_of :building, :name, :floor_level,
-        :dimensions, :rssi_1m_away_from_beacon, :average_phone_height,
-        :path_loss
+        :dimensions
 
     before_save :parse_dimensions
 

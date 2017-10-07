@@ -12,8 +12,8 @@ RSpec.describe Api::BeaconsController, type: :controller do
             minor: 1,
             lot_id: (create :lot).id,
             coordinates: {
-                x: 1,
-                y: -1
+                x: 1.0,
+                y: -1.0
             }
         }
     }}

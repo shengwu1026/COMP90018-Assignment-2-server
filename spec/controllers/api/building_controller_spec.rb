@@ -20,9 +20,9 @@ RSpec.describe Api::BuildingsController, type: :controller do
                 {
                     text: 'Ground Floor',
                     int: 0,
-                    length: 100,
-                    width: 100,
-                    height: 3,
+                    length: 100.0,
+                    width: 100.0,
+                    height: 3.0,
                     units: 'Metres',
                 }
             ]

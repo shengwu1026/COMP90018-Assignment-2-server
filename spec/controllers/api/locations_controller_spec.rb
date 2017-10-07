@@ -22,13 +22,21 @@ RSpec.describe Api::LocationsController, type: :controller do
 
     describe 'GET #fetch' do
         context 'if location exists for the little brother chip' do
-            let!(:location) { create :location }
+            let!(:location) { create :location, lot: lot }
+            let(:lot) { create :lot, building: building }
+            let(:building) { create :building }
             let(:little_brother_chip) { location.little_brother_chip }
 
             it 'fetches the location of a little brother chip' do
                 get :fetch, params: { little_brother_chip_id: little_brother_chip.id }
 
-                expect(response.body).to be_json_eql(location.attributes.select{|k,v| k.in? show_attr}.to_json)
+                expect(response.body).to be_json_eql(
+                    {
+                        id: location.id,
+                        lot: lot.attributes.select{|k,v| k.in? %w(id name floor_levels dimensions)},
+                        building: building.attributes.select{|k,v| k.in? %w(id name address)},
+                        coordinates: location.coordinates
+                    }.to_json)
             end
         end
 
@@ -38,7 +46,8 @@ RSpec.describe Api::LocationsController, type: :controller do
             it 'returns an empty location with `id` being null' do
                 get :fetch, params: { little_brother_chip_id: little_brother_chip.id }
 
-                expect(response.body).to be_json_eql(Location.new.attributes.select{|k,v| k.in? show_attr}.to_json)
+                expect(response.body).to be_json_eql(
+                    {id: nil, lot: nil, building: nil, coordinates: nil}.to_json)
             end
         end
     end
@@ -52,7 +61,7 @@ RSpec.describe Api::LocationsController, type: :controller do
         let(:beacon_2) { create :beacon, coordinates: {x: -1, y: -1}, manufacturer_uuid: SecureRandom.uuid }
         let(:beacon_3) { create :beacon, coordinates: {x: 1, y: -1}, manufacturer_uuid: SecureRandom.uuid }
         let(:beacons_array) { [beacon_1, beacon_2, beacon_3].each.with_index(1).map{|b,i|
-            {uuid: b.manufacturer_uuid, rssi: i * 10, major: b.major, minor: b.minor} } }
+            {uuid: b.manufacturer_uuid, distance_from_phone: i * 10, major: b.major, minor: b.minor} } }
 
         context 'when no location can be found for a little brother chip' do
             let(:little_brother_chip) { create :little_brother_chip }
@@ -62,7 +71,8 @@ RSpec.describe Api::LocationsController, type: :controller do
 
                 patch :triangulate, params: {
                     little_brother_chip_id: little_brother_chip.id,
-                    beacons: beacons_array }
+                    beacons: beacons_array,
+                    coordinates: {x: 10.0, y: 20.0}}
 
                 expect(response).to have_http_status(204)
 
@@ -75,7 +85,8 @@ RSpec.describe Api::LocationsController, type: :controller do
         it 'updates a little brother chips location' do
             patch :triangulate, params: {
                 little_brother_chip_id: little_brother_chip.id,
-                beacons: beacons_array }
+                beacons: beacons_array,
+                coordinates: {x: 1.0, y: 2.0} }
 
             expect(response).to have_http_status(204)
         end
@@ -88,11 +99,11 @@ RSpec.describe Api::LocationsController, type: :controller do
             end
 
             describe ':beacons' do
-                it 'has key :rssi' do
-                    invalid_beacons = beacons_array.map{|b| b.except :rssi}
+                it 'has key :distance_from_phone' do
+                    invalid_beacons = beacons_array.map{|b| b.except :distance_from_phone}
                     patch :triangulate, params: {little_brother_chip_id: little_brother_chip.id, beacons: invalid_beacons}
 
-                    expect(response.body).to be_json_eql({errors: 'Beacon parameters within `beacons` must have `rssi` key'}.to_json)
+                    expect(response.body).to be_json_eql({errors: 'Beacon parameters within `beacons` must have `distance_from_phone` key'}.to_json)
                 end
 
                 it 'has key :uuid' do

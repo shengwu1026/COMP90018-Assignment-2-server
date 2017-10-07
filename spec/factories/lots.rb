@@ -11,9 +11,5 @@ FactoryGirl.define do
             width: 25,
             height: 3
             })
-
-        rssi_1m_away_from_beacon 100.0
-        average_phone_height 1.5
-        path_loss 20.0
     end
 end

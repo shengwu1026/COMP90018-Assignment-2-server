@@ -30,21 +30,6 @@ RSpec.describe Lot, type: :model do
             subject.dimensions = {}
             expect(subject.dimensions).to eq({})
         end
-
-        it 'reads and writes :rssi_1m_away_from_beacon' do
-            subject.rssi_1m_away_from_beacon = 0.0
-            expect(subject.rssi_1m_away_from_beacon).to eq(0.0)
-        end
-
-        it 'reads and writes :average_phone_height' do
-            subject.average_phone_height = 10.0
-            expect(subject.average_phone_height).to eq(10.0)
-        end
-
-        it 'reads and writes :path_loss' do
-            subject.path_loss = 50.6
-            expect(subject.path_loss).to eq(50.6)
-        end
     end
 
     describe 'associations' do

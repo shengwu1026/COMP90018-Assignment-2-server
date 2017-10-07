@@ -4,9 +4,6 @@ class Building < ApplicationRecord
     has_many :little_brother_chips, through: :lots
     has_many :users, through: :little_brother_chips
 
-    # validates_presence_of :address, blank: false
-
-    # before_initialize :parse_floor_level_dimensions
     before_save :parse_floor_level_dimensions
     validate :validate_floor_levels, :validate_address
 
@@ -15,9 +12,11 @@ class Building < ApplicationRecord
             # raise self.inspect
             if floor_levels.present?
                 self.floor_levels = floor_levels.map{|f|
-                    # convert int length width height to integers
+                    f['int'] = f['int'].to_i
+
+                    # convert length width height to floats
                     f.map{|k,v|
-                        k.in?(%w(int length width height)) ?
+                        k.in?(%w(length width height)) ?
                             [k, v.to_f]
                             : [k, v]
                     }.to_h

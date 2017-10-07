@@ -54,17 +54,24 @@ RSpec.describe Building, type: :model do
             subject { create :building, floor_levels:
                     [{int: "1", length: "100", width: "100", height: "3", units: "Metres", text: "1st floor"}] }
 
-            it 'converts coordinates to integers' do
-
+            it 'converts dimensions to floats' do
                 subject.send :parse_floor_level_dimensions
                 subject.save
 
                 # test all these json values are of int type
                 floor_level = subject.floor_levels.first
 
-                %w(int length width height).each do |k|
-                    expect(floor_level[k]).to be_a(Integer)
+                %w(length width height).each do |k|
+                    expect(floor_level[k]).to be_a(Float)
                 end
+            end
+
+            it 'converts floor as int to integer' do
+                subject.send :parse_floor_level_dimensions
+                subject.save
+
+                floor_level = subject.floor_levels.first
+                expect(floor_level['int']).to be_a(Integer)
             end
         end
     end

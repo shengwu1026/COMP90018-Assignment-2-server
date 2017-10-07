@@ -12,13 +12,10 @@ RSpec.describe Api::LotsController, type: :controller do
             floor_level: 2,
             dimensions: {
                 units: 'Metres',
-                length: 150,
-                width: 225,
-                height: 30
-            },
-            rssi_1m_away_from_beacon: 100.0,
-            average_phone_height: 3.5,
-            path_loss: 50.0,
+                length: 150.0,
+                width: 225.0,
+                height: 30.0
+            }
         }
     }}
 
