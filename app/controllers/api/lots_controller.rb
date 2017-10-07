@@ -35,6 +35,22 @@ class Api::LotsController < ApplicationController
             : render_error(lot)
     end
 
+    def fetch_little_brother_chips
+        lot = Lot.find params[:lot_id]
+
+        # fetch all little brother chips and return their id and coordinates
+        little_brother_chips = lot.little_brother_chips.to_a.map{|l|
+            location = l.location
+            {
+                id: l.id,
+                coordinates: location ? location.coordinates : nil
+            }}
+
+        render json: {
+            little_brother_chips: little_brother_chips
+        }
+    end
+
     private
         def lot_params
             params.require(:lot).permit :building_id, :lot_type, :name, :floor_level,

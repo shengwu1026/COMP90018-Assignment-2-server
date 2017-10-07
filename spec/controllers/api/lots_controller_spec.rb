@@ -20,4 +20,22 @@ RSpec.describe Api::LotsController, type: :controller do
     }}
 
     it_behaves_like 'a resource controller'
+
+    describe 'GET #fetch_little_brother_chips' do
+        subject { create :lot }
+        let!(:little_brother_chip) { create :little_brother_chip }
+        let!(:location) { create :location, lot: subject, little_brother_chip: little_brother_chip }
+
+        it 'returns coordinates of little brother chips in this Lot' do
+            get :fetch_little_brother_chips, params: {lot_id: subject.id}
+
+            expect(response.body).to be_json_eql(
+                {little_brother_chips:
+                    [{
+                        id: little_brother_chip.id,
+                        coordinates: little_brother_chip.location.coordinates
+                    }]
+                }.to_json)
+        end
+    end
 end

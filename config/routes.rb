@@ -4,12 +4,14 @@ Rails.application.routes.draw do
   namespace :api do
       resources :users
       resources :buildings
-      resources :lots
+      resources :lots do
+          get '/little_brother_chips', to: 'lots#fetch_little_brother_chips'
+      end
       resources :beacons
       resources :locations
       resources :little_brother_chips do
           get '/location', to: 'locations#fetch'
-          patch '/location', to: 'locations#triangulate'         
+          patch '/location', to: 'locations#triangulate'
       end
   end
 
